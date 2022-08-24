@@ -1,75 +1,147 @@
-![Built With Stencil](https://img.shields.io/badge/-Built%20With%20Stencil-16161d.svg?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MTIgNTEyOyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI%2BCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI%2BCgkuc3Qwe2ZpbGw6I0ZGRkZGRjt9Cjwvc3R5bGU%2BCjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik00MjQuNywzNzMuOWMwLDM3LjYtNTUuMSw2OC42LTkyLjcsNjguNkgxODAuNGMtMzcuOSwwLTkyLjctMzAuNy05Mi43LTY4LjZ2LTMuNmgzMzYuOVYzNzMuOXoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTQyNC43LDI5Mi4xSDE4MC40Yy0zNy42LDAtOTIuNy0zMS05Mi43LTY4LjZ2LTMuNkgzMzJjMzcuNiwwLDkyLjcsMzEsOTIuNyw2OC42VjI5Mi4xeiIvPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNNDI0LjcsMTQxLjdIODcuN3YtMy42YzAtMzcuNiw1NC44LTY4LjYsOTIuNy02OC42SDMzMmMzNy45LDAsOTIuNywzMC43LDkyLjcsNjguNlYxNDEuN3oiLz4KPC9zdmc%2BCg%3D%3D&colorA=16161d&style=flat-square)
+# Issues
 
-# Stencil Component Starter
+There are two issues with the strategy being used here. Neither is an issue with Stencil. These issues are:
 
-This is a starter project for building a standalone Web Component using Stencil.
+- The component library being consumed uses global selectors that will not work embedded in shadow DOM unless the CSS and JavaScript using them is made to be part of the web component itself, which could cause bloat.
+- Slots should _only_ be used inside of Shadow DOM
 
-Stencil is also great for building entire apps. For that, use the [stencil-app-starter](https://github.com/ionic-team/stencil-app-starter) instead.
+## The Sample Application
 
-# Stencil
+This renders a basic page that looks like this:
 
-Stencil is a compiler for building fast web apps using Web Components.
-
-Stencil combines the best concepts of the most popular frontend frameworks into a compile-time rather than run-time tool.  Stencil takes TypeScript, JSX, a tiny virtual DOM layer, efficient one-way data binding, an asynchronous rendering pipeline (similar to React Fiber), and lazy-loading out of the box, and generates 100% standards-based Web Components that run in any browser supporting the Custom Elements v1 spec.
-
-Stencil components are just Web Components, so they work in any major framework or with no framework at all.
-
-## Getting Started
-
-To start building a new web component using Stencil, clone this repo to a new directory:
-
-```bash
-git clone https://github.com/ionic-team/stencil-component-starter.git my-component
-cd my-component
-git remote rm origin
+```
++----------------------------------------------------------+
+| Hello, World! I'm Stencil 'Don't call me a framework' JS |
+|                                                          |
+| A slot will go here...                                   | 
+|                                                          |
+| This is slotted                                          |
+| +---------------+                                        |
+| | With a button |                                        |
+| +---------------+                                        |
+|                                                          |
+| +----------------------+                                 |
+| | A non-slotted button |                                 |
+| +----------------------+                                 |
+|                                                          |
+| +-------------+                                          |
+| | Hello World |                                          |
+| +-------------+                                          |
+|                                                          |
++----------------------------------------------------------+
 ```
 
-and run:
+All buttons have the `fr-btn` class. However, `A non-slotted button` will not be styled because it is in the shadow DOM and the CSS selectors cannot see it by HTML specification and design.
 
-```bash
-npm install
-npm start
+The other two buttons _are_ styled because the are in the light DOM.
+
+Clicking the "Hello World" button will add new buttons to the `my-component` slot. These will also be styled because even though the slot is inside the component and thus in the shadow DOM, the button itself is a child of `my-compnent` and thus in the light DOM. This is how slotting works as per the HTML specification and design.
+
+As such, the page will look like this after a few presses:
+
+
+```
++----------------------------------------------------------+
+| Hello, World! I'm Stencil 'Don't call me a framework' JS |
+|                                                          |
+| A slot will go here...                                   | 
+|                                                          |
+| This is slotted                                          |
+| +---------------+                                        |
+| | With a button |                                        |
+| +---------------+                                        |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+|                                                          |
+| +----------------------+                                 |
+| | A non-slotted button |                                 |
+| +----------------------+                                 |
+|                                                          |
+| +-------------+                                          |
+| | Hello World |                                          |
+| +-------------+                                          |
+|                                                          |
++----------------------------------------------------------+
 ```
 
-To build the component for production, run:
+If you look at the console, you will also see that the slot changed event _is_ being fired as expected, including with the initial slotting of "This is slotted" and "With a button". The slot is being changed.
 
-```bash
-npm run build
+## Issue One
+
+That all works very well, but it shows problem number 1, which is that the `dsfr` components are not designed to work with shadow DOM, resulting in "A non-slotted button" not being styled.
+
+Again, this is by HTML specification and design. This is _not_ a bug.
+
+## Issue Two
+
+Issue two will become evident if you set `shadow: false` in order to try and get around "Issue One."
+
+Now "A non-slotted button" _is_ styled since it is no longer protected by shadow DOM. However, the buttons that are added will not be added into the `slot`. Instead you will get something like this:
+
+```
++----------------------------------------------------------+
+| Hello, World! I'm Stencil 'Don't call me a framework' JS |
+|                                                          |
+| A slot will go here...                                   | 
+|                                                          |
+| This is slotted                                          |
+| +---------------+                                        |
+| | With a button |                                        |
+| +---------------+                                        |
+|                                                          |
+| +----------------------+                                 |
+| | A non-slotted button |                                 |
+| +----------------------+                                 |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+| +----------------+                                       |
+| | Another button |                                       |
+| +----------------+                                       |
+|                                                          |
+| +-------------+                                          |
+| | Hello World |                                          |
+| +-------------+                                          |
+|                                                          |
++----------------------------------------------------------+
 ```
 
-To run the unit tests for the components, run:
+The reason for this is that we are not using shadow DOM, and a `slot` is only defined within the HTML specifications in the context of the shadow DOM. As such, when you add the buttons, they are simply children of the `my-component` and are rendered as such.
 
-```bash
-npm test
-```
+If you look at the console, you will see that the slot changed was _never_ called, not even with the initial slotting, because slots don't really exist outside of the shadow DOM so far as the browser is concerned.
 
-Need help? Check out our docs [here](https://stenciljs.com/docs/my-first-component).
+Again, this is _not_ a bug. This is just the way HTML works.
+
+The "This is slotted" and "With a button" elements _are_ actually slotted, but I believe this is Stencil doing the best that it can with the static elements.
+
+## The `onslotchange` Event
+
+This event [appears to be highly experimental](https://developer.mozilla.org/en-US/docs/Web/API/ShadowRoot/onslotchange). I do not know if I would trust it, but the behavior I have noted above is very logical to me and seems absolutely correct.
+
+## Solutions
+
+Any of the following seem to be reasonable solutions:
+
+- Do not use the `dsfr` library, at least in its current form
+- Use the library with SD but in the components that use `dsfr` components, be sure to import the proper CSS. This worries me with potential bloat in the CSS. I am also concerned that selectors used in the JavaScript will not work regardless.
+- Use the `dsfr` library but _do not_ support dynamically adding children to the containers. Rather, suggest that people only use statically defined child elements and then show / hide as appropriate. This may not be practical, especially for lists.
+- Use the `dsfr` library with SD off, and implement proper "add" and "remove" methods in the container elements (it would only be the container elements that would require this)
 
 
-## Naming Components
-
-When creating new component tags, we recommend _not_ using `stencil` in the component name (ex: `<stencil-datepicker>`). This is because the generated component has little to nothing to do with Stencil; it's just a web component!
-
-Instead, use a prefix that fits your company or any name for a group of related components. For example, all of the Ionic generated web components use the prefix `ion`.
-
-
-## Using this component
-
-There are three strategies we recommend for using web components built with Stencil.
-
-The first step for all three of these strategies is to [publish to NPM](https://docs.npmjs.com/getting-started/publishing-npm-packages).
-
-### Script tag
-
-- Put a script tag similar to this `<script type='module' src='https://unpkg.com/my-component@0.0.1/dist/my-component.esm.js'></script>` in the head of your index.html
-- Then you can use the element anywhere in your template, JSX, html etc
-
-### Node Modules
-- Run `npm install my-component --save`
-- Put a script tag similar to this `<script type='module' src='node_modules/my-component/dist/my-component.esm.js'></script>` in the head of your index.html
-- Then you can use the element anywhere in your template, JSX, html etc
-
-### In a stencil-starter app
-- Run `npm install my-component --save`
-- Add an import to the npm packages `import my-component;`
-- Then you can use the element anywhere in your template, JSX, html etc
+The last bullet point seems to be the least painful to me, though it does mean creating an unnatural API on each container.
