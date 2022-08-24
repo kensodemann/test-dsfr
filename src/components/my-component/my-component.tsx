@@ -37,8 +37,10 @@ export class MyComponent {
         <div>
           <p>A slot will go here...</p>
           <slot onSlotchange={() => this.slotChange()}></slot>
+          <p>&nbsp;</p>
         </div>
-        <button class="fr-btn">{this.getText()}</button>
+        <button class="fr-btn">A non-slotted button</button>
+        <p>&nbsp;</p>
       </div>
     );
   }

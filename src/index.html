@@ -12,13 +12,22 @@
 </head>
 
 <body>
-  <my-component first="Stencil" last="'Don't call me a framework' JS">
+  <my-component id="my-cmp" first="Stencil" last="'Don't call me a framework' JS">
     <p>This is slotted</p>
     <button class="fr-btn">With a button</button>
-    <p>&nbsp;</p>
   </my-component>
-  <p>&nbsp;</p>
-  <button class="fr-btn">Hello World</button>
+  <button class="fr-btn" onclick="appendButton()">Hello World</button>
 </body>
+
+<script>
+  function appendButton() {
+    let d = document.createElement('div');
+    let btn = document.createElement('button');
+    btn.classList.add('fr-btn');
+    btn.appendChild(document.createTextNode('Another Button'));
+    d.appendChild(btn);
+    document.querySelector('#my-cmp').appendChild(d);
+  }
+</script>
 
 </html>
