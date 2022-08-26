@@ -168,7 +168,7 @@ j
 
 In this model, the `dsfr` library is wrapped for each application framework. A [Vue based example](https://github.com/dnum-mi/vue-dsfr) of this already exists. It is then a matter of creating Angular and React based flavors.
 
-This is a fair amount of work, but likely could have been done by now had they taken this route from the start. Given that they already have a component library, using Stencil makes little sense. They are really looking for something _like_ our wrappers, but that wraps their `dsfr` components instead of Stencil components.
+This is a fair amount of work, but likely not too bad. Given that they already have a component library it makes sense that what is really needed is Angular, React, and Vue versions of the library. They are really looking for something _like_ our wrappers, but that wraps their `dsfr` components instead of Stencil components.
 
 There is a potential that the team could automate the creation of these framework specific wrappers. Due to the nature of the `dsfr` library, however, this may be a challenge. This may also not be possible. This may need to be a manual process.
 
