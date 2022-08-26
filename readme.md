@@ -5,7 +5,7 @@ There are two issues with the strategy being used here. Neither is an issue with
 - The component library being consumed uses global selectors that will not work embedded in shadow DOM unless the CSS and JavaScript using them is made to be part of the web component itself, which could cause bloat.
 - Slots should _only_ be used inside of Shadow DOM
 
-## The Sample Application
+## The Sample Library
 
 This renders a basic page that looks like this:
 
@@ -136,12 +136,39 @@ This event [appears to be highly experimental](https://developer.mozilla.org/en-
 
 ## Solutions
 
-Any of the following seem to be reasonable solutions:
+The `dsfr` design system needs to be used because the design team controls the design system and all properties need to use the exact same components. They cannot rewrite the components.
 
-- Do not use the `dsfr` library, at least in its current form
-- Use the library with SD but in the components that use `dsfr` components, be sure to import the proper CSS. This worries me with potential bloat in the CSS. I am also concerned that selectors used in the JavaScript will not work regardless.
-- Use the `dsfr` library but _do not_ support dynamically adding children to the containers. Rather, suggest that people only use statically defined child elements and then show / hide as appropriate. This may not be practical, especially for lists.
-- Use the `dsfr` library with SD off, and implement proper "add" and "remove" methods in the container elements (it would only be the container elements that would require this)
+There are a few ways to handle this:
+- re-write `dsfr` to create web-components using Stencil from the start
+- continue wrapping, but allow CSS and JavaScript to be brought into the components
+- do not use Stencil since this is not what it is designed for, rather create framework specific libraries that wrap `dsfr`
+
+### Rewriting `dsfr`
+
+The team that controls the `dsfr` design system would need to rewrite these components using Stencil. At that point, the framework wrappers would be used to create the Angular, React, and Vue libraries. This is a lot of work, but it is _exactly_ what Stencil is designed for.
+
+This would also entail breaking changes for anyone using the existing `dsfr` library as they would have to switch from markup like this: `<button class="fr-btn">Hello my friends!</button>` to markup like this: `<fr-button>Hello my friends!</fr-button>`.
+
+For the Ionic Customer Success team, think of an Ionic Framework v3 to v4 level migration. Huge. Also, though, Stencil was specifically created to take the Ionic Framework from the v3 methodology to the v4 methodology using web components.
+
+**Note:** while this may be the best option from a technological standpoint, it is fundamentally opposite of DGFiP's goals as well as a large shock to existing applications and sites.
 
 
-The last bullet point seems to be the least painful to me, though it does mean creating an unnatural API on each container.
+### Wrapping
+
+In the current strategy, it is not possible to use the `dsfr` CSS and JavaScript at a global level _and_ use Shadow DOM at the same time. The easiest compromise is to not use Shadow DOM and then work around any limitations this may provide.
+
+Another option is to create the components using Shadow DOM and then bring in the CSS and JavaScript as required so it can be applied within the component's shadow-root. You can see where [I have done that](https://github.com/kensodemann/test-dsfr/blob/main/src/components/my-component/my-component.css). If the comment is removed from the import of the `global.css` file, styles will be applied to the button that is in the shadow-root. There are a couple of caveats with this approach:
+
+- It is best to import the minimal amount of CSS required like the [Vue library](https://github.com/dnum-mi/vue-dsfr/blob/abd29b2a755ada3c296769ba9557cf02deefbad3/src/components/DsfrButton/DsfrButton.vue#L62) does. This sample brings in everything, but that is only to maintain the simplicity of the demo.
+- This does not account for the JavaScript. The sample library [applies the JavaScript globally](https://github.com/kensodemann/test-dsfr/blob/main/src/global.ts), but the selectors in the JavaScript will not be able to look inside of the Shadow DOM. As such, `dsfr` would likely need to be modified so the appropriate JavaScript could be imported and applied within each component.
+- This has the potential to cause bloat, depending on how the `dsfr` JavaScript and CSS is structured.
+j
+### Create Framework Specific Libraries
+
+In this model, the `dsfr` library is wrapped for each application framework. A [Vue based example](https://github.com/dnum-mi/vue-dsfr) of this already exists. It is then a matter of creating Angular and React based flavors.
+
+This is a fair amount of work, but likely could have been done by now had they taken this route from the start. Given that they already have a component library, using Stencil makes little sense. They are really looking for something _like_ our wrappers, but that wraps their `dsfr` components instead of Stencil components.
+
+There is a potential that the team could automate the creation of these framework specific wrappers. Due to the nature of the `dsfr` library, however, this may be a challenge. This may also not be possible. This may need to be a manual process.
+
