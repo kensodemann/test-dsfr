@@ -1,6 +1,7 @@
-dist/
-www/
-loader/
+/components
+/dist
+/www
+/loader
 
 *~
 *.sw[mnpcod]

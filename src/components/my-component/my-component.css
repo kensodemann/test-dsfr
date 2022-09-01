@@ -2,4 +2,5 @@
   display: block;
 }
 
-/* @import "../../global.css" */
+/* @import '~@gouvfr/dsfr/dist/component/button/button.min.css'; */
+/* @import '~@gouvfr/dsfr/dist/dsfr/dsfr.min.css';  */
